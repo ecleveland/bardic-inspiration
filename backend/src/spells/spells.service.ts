@@ -4,6 +4,10 @@ import { Model } from 'mongoose';
 import { Spell, SpellDocument } from './spell.schema';
 import { QuerySpellsDto } from './dto/query-spells.dto';
 
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 @Injectable()
 export class SpellsService {
   constructor(
@@ -31,7 +35,7 @@ export class SpellsService {
           .find({ ...filter, $text: { $search: query.search } })
           .exec();
       } catch {
-        filter.name = { $regex: query.search, $options: 'i' };
+        filter.name = { $regex: escapeRegex(query.search), $options: 'i' };
       }
     }
 
