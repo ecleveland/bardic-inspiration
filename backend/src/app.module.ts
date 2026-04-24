@@ -6,6 +6,7 @@ import { SpellsModule } from './spells/spells.module';
 import { GenresModule } from './genres/genres.module';
 import { TemplatesModule } from './templates/templates.module';
 import { GenerationModule } from './generation/generation.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { GenerationModule } from './generation/generation.module';
     GenresModule,
     TemplatesModule,
     GenerationModule,
+    HealthModule,
   ],
 })
 export class AppModule {}
