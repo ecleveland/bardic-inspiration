@@ -4,6 +4,7 @@ import { Throttle } from '@nestjs/throttler';
 import { GenerationService } from './generation.service';
 import { CreateGenerationDto } from './dto/create-generation.dto';
 import { RateGenerationDto } from './dto/rate-generation.dto';
+import { ParseObjectIdPipe } from '../common/pipes';
 
 @ApiTags('generation')
 @Controller()
@@ -17,12 +18,15 @@ export class GenerationController {
   }
 
   @Get('generations/:id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.generationService.findOne(id);
   }
 
   @Post('generations/:id/rate')
-  rate(@Param('id') id: string, @Body() dto: RateGenerationDto) {
+  rate(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() dto: RateGenerationDto,
+  ) {
     return this.generationService.rate(id, dto.rating);
   }
 }

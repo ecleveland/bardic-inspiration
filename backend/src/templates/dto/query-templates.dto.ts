@@ -1,16 +1,16 @@
-import { IsOptional, IsString, IsBoolean } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
+import { IsOptional, IsMongoId, IsBoolean } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryTemplatesDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
+  @IsMongoId()
   spellId?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
+  @IsMongoId()
   genreId?: string;
 
   @ApiPropertyOptional()

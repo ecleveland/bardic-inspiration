@@ -2,6 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TemplatesService } from './templates.service';
 import { QueryTemplatesDto } from './dto/query-templates.dto';
+import { ParseObjectIdPipe } from '../common/pipes';
 
 @ApiTags('templates')
 @Controller('templates')
@@ -19,7 +20,7 @@ export class TemplatesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.templatesService.findOne(id);
   }
 }
