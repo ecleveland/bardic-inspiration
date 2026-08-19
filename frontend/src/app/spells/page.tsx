@@ -5,6 +5,7 @@ import type { Spell } from '@/lib/types';
 import { getSpells } from '@/lib/api';
 import SpellCard from '@/components/SpellCard';
 import LoadingBard from '@/components/LoadingBard';
+import { EmptyState, Input, Select, CardGrid } from '@/components/ui';
 
 export default function SpellsPage() {
   const [spells, setSpells] = useState<Spell[]>([]);
@@ -47,17 +48,17 @@ export default function SpellsPage() {
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-8">
-        <input
+        <Input
           type="text"
           placeholder="Search spells..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700/50 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/40 transition-colors"
+          className="flex-1"
         />
-        <select
+        <Select
           value={levelFilter}
           onChange={(e) => setLevelFilter(e.target.value)}
-          className="px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700/50 text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/40 transition-colors"
+          className="w-auto"
         >
           <option value="">All Levels</option>
           <option value="0">Cantrips</option>
@@ -66,34 +67,32 @@ export default function SpellsPage() {
               {l === 1 ? '1st' : l === 2 ? '2nd' : l === 3 ? '3rd' : `${l}th`} Level
             </option>
           ))}
-        </select>
-        <select
+        </Select>
+        <Select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
-          className="px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700/50 text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/40 transition-colors"
+          className="w-auto"
         >
           <option value="">All Types</option>
           <option value="cantrip">Cantrip</option>
           <option value="spell">Spell</option>
           <option value="class_feature">Class Feature</option>
           <option value="subclass_feature">Subclass Feature</option>
-        </select>
+        </Select>
       </div>
 
       {loading ? (
         <LoadingBard />
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-slate-500 text-lg">No spells found matching your criteria.</p>
-        </div>
+        <EmptyState title="No spells found matching your criteria." />
       ) : (
         <>
           <p className="text-sm text-slate-500 mb-4">{filtered.length} spell{filtered.length !== 1 ? 's' : ''} found</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <CardGrid>
             {filtered.map((spell) => (
               <SpellCard key={spell._id} spell={spell} />
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
     </div>

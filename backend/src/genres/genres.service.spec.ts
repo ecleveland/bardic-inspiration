@@ -17,9 +17,15 @@ describe('GenresService', () => {
 
   beforeEach(async () => {
     model = {
-      find: jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue([mockGenre]) }),
-      findOne: jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(mockGenre) }),
-      findById: jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(mockGenre) }),
+      find: jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue([mockGenre]) }),
+      findOne: jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(mockGenre) }),
+      findById: jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(mockGenre) }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -35,14 +41,18 @@ describe('GenresService', () => {
 
   describe('findAll', () => {
     it('should call find with empty filter when no query params', async () => {
-      model.find.mockReturnValue({ exec: jest.fn().mockResolvedValue([mockGenre]) });
+      model.find.mockReturnValue({
+        exec: jest.fn().mockResolvedValue([mockGenre]),
+      });
       const result = await service.findAll({});
       expect(model.find).toHaveBeenCalledWith({});
       expect(result).toEqual([mockGenre]);
     });
 
     it('should filter by category when provided', async () => {
-      model.find.mockReturnValue({ exec: jest.fn().mockResolvedValue([mockGenre]) });
+      model.find.mockReturnValue({
+        exec: jest.fn().mockResolvedValue([mockGenre]),
+      });
       await service.findAll({ category: 'fantasy' });
       expect(model.find).toHaveBeenCalledWith({ category: 'fantasy' });
     });
@@ -50,14 +60,18 @@ describe('GenresService', () => {
 
   describe('findOneBySlug', () => {
     it('should return a genre by slug', async () => {
-      model.findOne.mockReturnValue({ exec: jest.fn().mockResolvedValue(mockGenre) });
+      model.findOne.mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockGenre),
+      });
       const result = await service.findOneBySlug('power-metal');
       expect(model.findOne).toHaveBeenCalledWith({ slug: 'power-metal' });
       expect(result).toEqual(mockGenre);
     });
 
     it('should return null when slug not found', async () => {
-      model.findOne.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+      model.findOne.mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
       const result = await service.findOneBySlug('nonexistent');
       expect(result).toBeNull();
     });
@@ -65,14 +79,18 @@ describe('GenresService', () => {
 
   describe('findOne', () => {
     it('should return a genre by id', async () => {
-      model.findById.mockReturnValue({ exec: jest.fn().mockResolvedValue(mockGenre) });
+      model.findById.mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockGenre),
+      });
       const result = await service.findOne('genre-id-1');
       expect(model.findById).toHaveBeenCalledWith('genre-id-1');
       expect(result).toEqual(mockGenre);
     });
 
     it('should return null when id not found', async () => {
-      model.findById.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+      model.findById.mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
       const result = await service.findOne('nonexistent');
       expect(result).toBeNull();
     });

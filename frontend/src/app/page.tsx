@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import FeaturedTemplates from '@/components/FeaturedTemplates';
+import { Card } from '@/components/ui';
 
 export default function HomePage() {
   return (
@@ -51,17 +52,14 @@ export default function HomePage() {
               desc: 'AI generates thematic song lyrics tailored to your spell and style.',
             },
           ].map((item) => (
-            <div
-              key={item.step}
-              className="text-center bg-slate-800/40 border border-slate-700/30 rounded-xl p-8"
-            >
+            <Card key={item.step} variant="subtle" padding="lg" className="text-center">
               <div className="text-4xl mb-4">{item.icon}</div>
               <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-violet-600/30 text-violet-400 text-sm font-bold mb-3">
                 {item.step}
               </div>
               <h3 className="text-lg font-semibold text-slate-100 mb-2">{item.title}</h3>
               <p className="text-sm text-slate-400">{item.desc}</p>
-            </div>
+            </Card>
           ))}
         </div>
       </section>

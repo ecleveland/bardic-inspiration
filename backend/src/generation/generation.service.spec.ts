@@ -19,6 +19,7 @@ jest.mock('@anthropic-ai/sdk', () => {
   };
 });
 
+// prettier-ignore
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { default: MockAnthropic, _mockCreate: mockCreate } = require('@anthropic-ai/sdk');
 
@@ -72,18 +73,29 @@ describe('GenerationService', () => {
 
   beforeEach(async () => {
     // Constructor-callable model mock
-    const modelFn = jest.fn().mockImplementation(function (this: any, data: any) {
+    const modelFn = jest.fn().mockImplementation(function (
+      this: any,
+      data: any,
+    ) {
       Object.assign(this, data);
       this.save = jest.fn().mockResolvedValue({ ...data, _id: 'gen-id-new' });
     }) as any;
-    modelFn.findOne = jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
-    modelFn.findById = jest.fn().mockReturnValue(populateChain(mockSavedGeneration));
-    modelFn.findByIdAndUpdate = jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(mockSavedGeneration) });
+    modelFn.findOne = jest
+      .fn()
+      .mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+    modelFn.findById = jest
+      .fn()
+      .mockReturnValue(populateChain(mockSavedGeneration));
+    modelFn.findByIdAndUpdate = jest.fn().mockReturnValue({
+      exec: jest.fn().mockResolvedValue(mockSavedGeneration),
+    });
     generationModel = modelFn;
 
     spellsService = { findOne: jest.fn().mockResolvedValue(mockSpell) };
     genresService = { findOne: jest.fn().mockResolvedValue(mockGenre) };
-    templatesService = { findBySpellAndGenre: jest.fn().mockResolvedValue(null) };
+    templatesService = {
+      findBySpellAndGenre: jest.fn().mockResolvedValue(null),
+    };
     configService = { get: jest.fn().mockReturnValue('test-api-key') };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -105,7 +117,9 @@ describe('GenerationService', () => {
     genresService.findOne.mockResolvedValue(mockGenre);
     templatesService.findBySpellAndGenre.mockResolvedValue(null);
     configService.get.mockReturnValue('test-api-key');
-    generationModel.findOne.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+    generationModel.findOne.mockReturnValue({
+      exec: jest.fn().mockResolvedValue(null),
+    });
   });
 
   describe('generate', () => {
@@ -128,7 +142,9 @@ describe('GenerationService', () => {
         templatesService.findBySpellAndGenre.mockResolvedValue(mockTemplate);
         generationModel.mockImplementation(function (this: any, data: any) {
           Object.assign(this, data);
-          this.save = jest.fn().mockResolvedValue({ ...data, _id: 'gen-id-new' });
+          this.save = jest
+            .fn()
+            .mockResolvedValue({ ...data, _id: 'gen-id-new' });
         });
 
         const result = await service.generate({
@@ -145,13 +161,19 @@ describe('GenerationService', () => {
 
       it('should skip template when customPrompt is provided', async () => {
         templatesService.findBySpellAndGenre.mockResolvedValue(mockTemplate);
-        generationModel.findOne.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+        generationModel.findOne.mockReturnValue({
+          exec: jest.fn().mockResolvedValue(null),
+        });
         mockCreate.mockResolvedValue({
-          content: [{ type: 'text', text: 'TITLE: Custom Song\n\nLyrics here' }],
+          content: [
+            { type: 'text', text: 'TITLE: Custom Song\n\nLyrics here' },
+          ],
         });
         generationModel.mockImplementation(function (this: any, data: any) {
           Object.assign(this, data);
-          this.save = jest.fn().mockResolvedValue({ ...data, _id: 'gen-id-new' });
+          this.save = jest
+            .fn()
+            .mockResolvedValue({ ...data, _id: 'gen-id-new' });
         });
 
         await service.generate({
@@ -166,8 +188,13 @@ describe('GenerationService', () => {
 
     describe('cache path', () => {
       it('should return cached generation when found', async () => {
-        const cached = { ...mockSavedGeneration, model: 'claude-sonnet-4-20250514' };
-        generationModel.findOne.mockReturnValue({ exec: jest.fn().mockResolvedValue(cached) });
+        const cached = {
+          ...mockSavedGeneration,
+          model: 'claude-sonnet-4-20250514',
+        };
+        generationModel.findOne.mockReturnValue({
+          exec: jest.fn().mockResolvedValue(cached),
+        });
 
         const result = await service.generate({
           spellId: 'spell-id-1',
@@ -179,13 +206,17 @@ describe('GenerationService', () => {
       });
 
       it('should use $exists:false when no customPrompt', async () => {
-        generationModel.findOne.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+        generationModel.findOne.mockReturnValue({
+          exec: jest.fn().mockResolvedValue(null),
+        });
         mockCreate.mockResolvedValue({
           content: [{ type: 'text', text: 'TITLE: Test\n\nLyrics' }],
         });
         generationModel.mockImplementation(function (this: any, data: any) {
           Object.assign(this, data);
-          this.save = jest.fn().mockResolvedValue({ ...data, _id: 'gen-id-new' });
+          this.save = jest
+            .fn()
+            .mockResolvedValue({ ...data, _id: 'gen-id-new' });
         });
 
         await service.generate({
@@ -203,10 +234,14 @@ describe('GenerationService', () => {
 
     describe('AI path', () => {
       beforeEach(() => {
-        generationModel.findOne.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+        generationModel.findOne.mockReturnValue({
+          exec: jest.fn().mockResolvedValue(null),
+        });
         generationModel.mockImplementation(function (this: any, data: any) {
           Object.assign(this, data);
-          this.save = jest.fn().mockResolvedValue({ ...data, _id: 'gen-id-new' });
+          this.save = jest
+            .fn()
+            .mockResolvedValue({ ...data, _id: 'gen-id-new' });
         });
       });
 
@@ -250,7 +285,9 @@ describe('GenerationService', () => {
 
       it('should fall back to spell-genre title when TITLE not in response', async () => {
         mockCreate.mockResolvedValue({
-          content: [{ type: 'text', text: 'Just some lyrics without a title line' }],
+          content: [
+            { type: 'text', text: 'Just some lyrics without a title line' },
+          ],
         });
 
         await service.generate({
@@ -287,7 +324,9 @@ describe('GenerationService', () => {
 
   describe('findOne', () => {
     it('should return a populated generation', async () => {
-      generationModel.findById.mockReturnValue(populateChain(mockSavedGeneration));
+      generationModel.findById.mockReturnValue(
+        populateChain(mockSavedGeneration),
+      );
       const result = await service.findOne('gen-id-1');
       expect(generationModel.findById).toHaveBeenCalledWith('gen-id-1');
       expect(result).toEqual(mockSavedGeneration);

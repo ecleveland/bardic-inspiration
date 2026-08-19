@@ -109,7 +109,10 @@ describe('TemplatesService', () => {
   describe('findBySpellAndGenre', () => {
     it('should find template matching spell and genre', async () => {
       model.findOne.mockReturnValue(populateChain(mockTemplate));
-      const result = await service.findBySpellAndGenre('spell-id-1', 'genre-id-1');
+      const result = await service.findBySpellAndGenre(
+        'spell-id-1',
+        'genre-id-1',
+      );
       expect(model.findOne).toHaveBeenCalledWith({
         spellId: 'spell-id-1',
         genreId: 'genre-id-1',
@@ -119,7 +122,10 @@ describe('TemplatesService', () => {
 
     it('should return null when no match', async () => {
       model.findOne.mockReturnValue(populateChain(null));
-      const result = await service.findBySpellAndGenre('spell-id-1', 'genre-id-2');
+      const result = await service.findBySpellAndGenre(
+        'spell-id-1',
+        'genre-id-2',
+      );
       expect(result).toBeNull();
     });
   });

@@ -5,13 +5,15 @@ import Link from 'next/link';
 import type { Genre } from '@/lib/types';
 import { getGenres } from '@/lib/api';
 import LoadingBard from '@/components/LoadingBard';
+import { Card, CardGrid, EmptyState } from '@/components/ui';
 
 function GenreCard({ genre }: { genre: Genre }) {
   const isFantasy = genre.category === 'fantasy';
   return (
     <Link href={`/genres/${genre.slug}`} className="block group">
-      <div
-        className={`bg-slate-800/80 border rounded-xl p-5 h-full transition-all duration-200 hover:shadow-lg group-hover:-translate-y-0.5 ${
+      <Card
+        variant="hoverable"
+        className={`h-full group-hover:-translate-y-0.5 ${
           isFantasy
             ? 'border-violet-800/30 hover:border-violet-500/50 hover:shadow-violet-900/20'
             : 'border-sky-800/30 hover:border-sky-500/50 hover:shadow-sky-900/20'
@@ -26,7 +28,7 @@ function GenreCard({ genre }: { genre: Genre }) {
             &ldquo;{genre.exampleLines[0]}&rdquo;
           </p>
         )}
-      </div>
+      </Card>
     </Link>
   );
 }
@@ -65,11 +67,11 @@ export default function GenresPage() {
               <h2 className="text-xl font-bold text-violet-400 mb-4 flex items-center gap-2">
                 <span>&#9876;&#65039;</span> Fantasy Genres
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <CardGrid>
                 {fantasy.map((g) => (
                   <GenreCard key={g._id} genre={g} />
                 ))}
-              </div>
+              </CardGrid>
             </section>
           )}
           {modern.length > 0 && (
@@ -77,15 +79,15 @@ export default function GenresPage() {
               <h2 className="text-xl font-bold text-sky-400 mb-4 flex items-center gap-2">
                 <span>&#127911;</span> Modern Genres
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <CardGrid>
                 {modern.map((g) => (
                   <GenreCard key={g._id} genre={g} />
                 ))}
-              </div>
+              </CardGrid>
             </section>
           )}
           {genres.length === 0 && (
-            <p className="text-center text-slate-500 py-16">No genres available.</p>
+            <EmptyState title="No genres available." />
           )}
         </div>
       )}

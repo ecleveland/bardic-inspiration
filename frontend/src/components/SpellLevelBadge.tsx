@@ -1,3 +1,5 @@
+import Badge from './ui/Badge';
+
 const levelColors: Record<number, string> = {
   0: 'bg-slate-600 text-slate-200',
   1: 'bg-emerald-700 text-emerald-100',
@@ -31,12 +33,11 @@ interface SpellLevelBadgeProps {
 
 export default function SpellLevelBadge({ level, className = '' }: SpellLevelBadgeProps) {
   return (
-    <span
-      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
-        levelColors[level] || 'bg-slate-600 text-slate-200'
-      } ${className}`}
+    <Badge
+      variant="solid"
+      className={`${levelColors[level] || 'bg-slate-600 text-slate-200'} ${className}`}
     >
       {levelLabels[level] || `${level}th`}
-    </span>
+    </Badge>
   );
 }

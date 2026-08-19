@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import type { Template, Spell, Genre } from '@/lib/types';
+import Card from './ui/Card';
+import Badge from './ui/Badge';
 
 interface TemplateCardProps {
   template: Template;
@@ -15,12 +17,16 @@ export default function TemplateCard({ template }: TemplateCardProps) {
 
   return (
     <Link href={`/templates/${template._id}`} className="block group">
-      <div className="bg-slate-800/80 border border-slate-700/50 rounded-xl p-5 h-full transition-all duration-200 hover:border-violet-500/50 hover:bg-slate-800 hover:shadow-lg hover:shadow-violet-900/20 group-hover:-translate-y-0.5 relative overflow-hidden">
+      <Card variant="hoverable" className="h-full group-hover:-translate-y-0.5 relative overflow-hidden">
         {template.isFeatured && (
           <div className="absolute top-3 right-3">
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+            <Badge
+              variant="outline"
+              rounded="full"
+              className="bg-amber-500/20 text-amber-400 border-amber-500/30 font-semibold"
+            >
               &#9733; Featured
-            </span>
+            </Badge>
           </div>
         )}
         <h3 className="text-lg font-semibold text-slate-100 group-hover:text-violet-300 transition-colors mb-2 pr-20">
@@ -40,7 +46,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
             {previewLines}
           </pre>
         )}
-      </div>
+      </Card>
     </Link>
   );
 }

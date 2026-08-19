@@ -8,6 +8,7 @@ import GenerateForm from '@/components/GenerateForm';
 import LyricsDisplay from '@/components/LyricsDisplay';
 import RatingStars from '@/components/RatingStars';
 import LoadingBard from '@/components/LoadingBard';
+import { Card, EmptyState } from '@/components/ui';
 
 function GeneratePageContent() {
   const searchParams = useSearchParams();
@@ -36,13 +37,13 @@ function GeneratePageContent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Form */}
         <div>
-          <div className="bg-slate-800/40 border border-slate-700/30 rounded-xl p-6">
+          <Card variant="subtle" padding="lg">
             <GenerateForm
               initialSpellId={initialSpellId}
               onGenerated={handleGenerated}
               onLoading={setLoading}
             />
-          </div>
+          </Card>
         </div>
 
         {/* Results */}
@@ -68,15 +69,12 @@ function GeneratePageContent() {
           )}
 
           {!loading && !currentGeneration && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="text-5xl mb-4">&#127930;</div>
-              <p className="text-slate-500 text-lg mb-2">
-                Your lyrics will appear here
-              </p>
-              <p className="text-slate-600 text-sm">
-                Select a spell and genre, then hit Generate!
-              </p>
-            </div>
+            <EmptyState
+              icon="&#127930;"
+              title="Your lyrics will appear here"
+              description="Select a spell and genre, then hit Generate!"
+              className="py-20"
+            />
           )}
         </div>
       </div>
@@ -87,9 +85,11 @@ function GeneratePageContent() {
           <h2 className="text-xl font-bold text-slate-100 mb-4">Previous Generations</h2>
           <div className="space-y-4">
             {history.slice(1).map((gen) => (
-              <div
+              <Card
                 key={gen._id}
-                className="bg-slate-800/40 border border-slate-700/30 rounded-xl p-4 cursor-pointer hover:border-violet-500/40 transition-colors"
+                variant="interactive"
+                padding="sm"
+                className="bg-slate-800/40 border-slate-700/30 hover:border-violet-500/40"
                 onClick={() => setCurrentGeneration(gen)}
               >
                 <div className="flex items-center justify-between">
@@ -101,7 +101,7 @@ function GeneratePageContent() {
                   )}
                 </div>
                 <p className="text-sm text-slate-500 mt-1 line-clamp-2">{gen.lyrics}</p>
-              </div>
+              </Card>
             ))}
           </div>
         </div>

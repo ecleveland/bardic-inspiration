@@ -1,3 +1,5 @@
+import Badge from './ui/Badge';
+
 interface GenreBadgeProps {
   name: string;
   category: 'fantasy' | 'modern';
@@ -11,10 +13,8 @@ export default function GenreBadge({ name, category, className = '' }: GenreBadg
       : 'bg-sky-600/30 text-sky-300 border-sky-500/40';
 
   return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${colors} ${className}`}
-    >
+    <Badge variant="outline" rounded="full" className={`${colors} ${className}`}>
       {name}
-    </span>
+    </Badge>
   );
 }
