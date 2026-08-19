@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Template, TemplateDocument } from './template.schema';
 import { QueryTemplatesDto } from './dto/query-templates.dto';
 
@@ -34,9 +34,9 @@ export class TemplatesService {
   }
 
   async findRandom(): Promise<Template | null> {
-    const results = await this.templateModel.aggregate([
-      { $sample: { size: 1 } },
-    ]);
+    const results = await this.templateModel.aggregate<{ _id: Types.ObjectId }>(
+      [{ $sample: { size: 1 } }],
+    );
     if (results.length === 0) return null;
     return this.templateModel
       .findById(results[0]._id)
