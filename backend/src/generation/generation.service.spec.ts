@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  NotFoundException,
+  ServiceUnavailableException,
+  HttpException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GenerationService } from './generation.service';
 import { Generation } from './generation.schema';
@@ -9,14 +13,25 @@ import { GenresService } from '../genres/genres.service';
 import { TemplatesService } from '../templates/templates.service';
 
 jest.mock('@anthropic-ai/sdk', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const actual = jest.requireActual('@anthropic-ai/sdk');
   const mockCreate = jest.fn();
-  return {
-    __esModule: true,
-    default: jest.fn().mockImplementation(() => ({
-      messages: { create: mockCreate },
-    })),
-    _mockCreate: mockCreate,
-  };
+  const MockAnthropic = jest.fn().mockImplementation(() => ({
+    messages: { create: mockCreate },
+  }));
+  // The service does instanceof checks against Anthropic.APIError, so the mock
+  // has to carry the real classes. They live on the prototype chain rather than
+  // as own properties, so Object.assign over the class does not pick them up.
+  /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+  Object.assign(MockAnthropic, {
+    APIError: actual.default.APIError,
+    RateLimitError: actual.default.RateLimitError,
+    APIConnectionError: actual.default.APIConnectionError,
+    AuthenticationError: actual.default.AuthenticationError,
+    InternalServerError: actual.default.InternalServerError,
+  });
+  /* eslint-enable @typescript-eslint/no-unsafe-member-access */
+  return { __esModule: true, default: MockAnthropic, _mockCreate: mockCreate };
 });
 
 // prettier-ignore
@@ -245,11 +260,90 @@ describe('GenerationService', () => {
         });
       });
 
-      it('should throw BadRequestException when no API key', async () => {
+      it('should throw ServiceUnavailableException when no API key', async () => {
+        // A missing server-side key is a misconfiguration, not bad client
+        // input, so it must not come back as a 4xx (VEG-77).
         configService.get.mockReturnValue(undefined);
         await expect(
           service.generate({ spellId: 'spell-id-1', genreId: 'genre-id-1' }),
-        ).rejects.toThrow(BadRequestException);
+        ).rejects.toThrow(ServiceUnavailableException);
+      });
+
+      describe('upstream failures (VEG-77)', () => {
+        const generate = () =>
+          service.generate({ spellId: 'spell-id-1', genreId: 'genre-id-1' });
+
+        function statusOf(error: unknown): number {
+          expect(error).toBeInstanceOf(HttpException);
+          return (error as HttpException).getStatus();
+        }
+
+        it('should map a rate limit error to 429', async () => {
+          mockCreate.mockRejectedValue(
+            new MockAnthropic.RateLimitError(
+              429,
+              { type: 'rate_limit_error' },
+              'rate limit exceeded',
+              new Headers(),
+            ),
+          );
+          const error: unknown = await generate().catch((e: unknown) => e);
+          expect(statusOf(error)).toBe(429);
+        });
+
+        it('should map an upstream server error to 502', async () => {
+          mockCreate.mockRejectedValue(
+            new MockAnthropic.InternalServerError(
+              500,
+              { type: 'api_error' },
+              'overloaded',
+              new Headers(),
+            ),
+          );
+          const error: unknown = await generate().catch((e: unknown) => e);
+          expect(statusOf(error)).toBe(502);
+        });
+
+        it('should map a connection error to 502', async () => {
+          mockCreate.mockRejectedValue(
+            new MockAnthropic.APIConnectionError({ message: 'socket hang up' }),
+          );
+          const error: unknown = await generate().catch((e: unknown) => e);
+          expect(statusOf(error)).toBe(502);
+        });
+
+        it('should map a bad server-side API key to 502', async () => {
+          mockCreate.mockRejectedValue(
+            new MockAnthropic.AuthenticationError(
+              401,
+              { type: 'authentication_error' },
+              'invalid x-api-key',
+              new Headers(),
+            ),
+          );
+          const error: unknown = await generate().catch((e: unknown) => e);
+          expect(statusOf(error)).toBe(502);
+        });
+
+        it('should not leak the upstream message to the client', async () => {
+          mockCreate.mockRejectedValue(
+            new MockAnthropic.AuthenticationError(
+              401,
+              { type: 'authentication_error' },
+              'invalid x-api-key sk-ant-secret123',
+              new Headers(),
+            ),
+          );
+          const error: unknown = await generate().catch((e: unknown) => e);
+          expect(
+            JSON.stringify((error as HttpException).getResponse()),
+          ).not.toContain('sk-ant-secret123');
+        });
+
+        it('should not swallow a non-Anthropic failure', async () => {
+          mockCreate.mockRejectedValue(new Error('something else broke'));
+          await expect(generate()).rejects.toThrow('something else broke');
+        });
       });
 
       it('should call Claude API and parse title from response', async () => {

@@ -1,7 +1,9 @@
 import {
   Injectable,
+  HttpException,
   NotFoundException,
-  BadRequestException,
+  BadGatewayException,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
@@ -37,6 +39,23 @@ ${genreStyle}`;
   }
 
   return prompt;
+}
+
+// Anthropic error messages can carry key fragments and request internals, so
+// none of them reach the client. Most specific class first.
+function toUpstreamException(error: unknown): unknown {
+  if (error instanceof Anthropic.RateLimitError) {
+    return new HttpException(
+      'Lyric generation is busy, try again shortly',
+      429,
+    );
+  }
+  // Every SDK error class extends APIError, including APIConnectionError.
+  if (error instanceof Anthropic.APIError) {
+    return new BadGatewayException('Lyric generation is unavailable');
+  }
+  // Not an upstream failure. Let it bubble to the controller.
+  return error;
 }
 
 @Injectable()
@@ -103,30 +122,38 @@ export class GenerationService {
     // Call Claude API
     const apiKey = this.configService.get<string>('ANTHROPIC_API_KEY');
     if (!apiKey) {
-      throw new BadRequestException('ANTHROPIC_API_KEY is not configured');
+      // A missing key is a deployment problem the caller cannot act on.
+      throw new ServiceUnavailableException(
+        'Lyric generation is not configured',
+      );
     }
 
     const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [
-        {
-          role: 'user',
-          content: buildPrompt(
-            spell as {
-              name: string;
-              description: string;
-              level: number;
-              school: string;
-            },
-            genre as { slug: string; name: string; styleGuide: string },
-            dto.customPrompt,
-          ),
-        },
-      ],
-    });
+    let response: Anthropic.Message;
+    try {
+      response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        system: SYSTEM_PROMPT,
+        messages: [
+          {
+            role: 'user',
+            content: buildPrompt(
+              spell as {
+                name: string;
+                description: string;
+                level: number;
+                school: string;
+              },
+              genre as { slug: string; name: string; styleGuide: string },
+              dto.customPrompt,
+            ),
+          },
+        ],
+      });
+    } catch (error) {
+      throw toUpstreamException(error);
+    }
 
     const textBlock = response.content.find((block) => block.type === 'text');
     const fullText = textBlock && 'text' in textBlock ? textBlock.text : '';
