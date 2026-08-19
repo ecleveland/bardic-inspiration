@@ -5,6 +5,7 @@ import type { Template } from '@/lib/types';
 import { getTemplates } from '@/lib/api';
 import TemplateCard from '@/components/TemplateCard';
 import LoadingBard from '@/components/LoadingBard';
+import { EmptyState, CardGrid } from '@/components/ui';
 
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -58,15 +59,13 @@ export default function TemplatesPage() {
       {loading ? (
         <LoadingBard />
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-slate-500 text-lg">No templates found.</p>
-        </div>
+        <EmptyState title="No templates found." />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <CardGrid>
           {filtered.map((template) => (
             <TemplateCard key={template._id} template={template} />
           ))}
-        </div>
+        </CardGrid>
       )}
     </div>
   );

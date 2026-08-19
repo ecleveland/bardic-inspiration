@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import LoadingSpinner from './ui/LoadingSpinner';
 
 const messages = [
   'Tuning the lute...',
@@ -26,7 +27,7 @@ export default function LoadingBard({ className = '' }: { className?: string }) 
   return (
     <div className={`flex flex-col items-center justify-center gap-4 py-12 ${className}`}>
       <div className="relative">
-        <div className="w-16 h-16 rounded-full border-4 border-slate-700 border-t-violet-500 animate-spin" />
+        <LoadingSpinner size="lg" />
         <span className="absolute inset-0 flex items-center justify-center text-2xl">
           &#9835;
         </span>
