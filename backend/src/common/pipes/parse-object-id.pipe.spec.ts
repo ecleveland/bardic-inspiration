@@ -34,3 +34,9 @@ describe('ParseObjectIdPipe', () => {
     );
   });
 });
+
+describe('deliberate CI gate check (to be reverted)', () => {
+  it('fails on purpose', () => {
+    expect(1).toBe(2);
+  });
+});
