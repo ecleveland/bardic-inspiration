@@ -115,7 +115,12 @@ export class GenerationService {
         {
           role: 'user',
           content: buildPrompt(
-            spell as { name: string; description: string; level: number; school: string },
+            spell as {
+              name: string;
+              description: string;
+              level: number;
+              school: string;
+            },
             genre as { slug: string; name: string; styleGuide: string },
             dto.customPrompt,
           ),
@@ -128,7 +133,9 @@ export class GenerationService {
 
     // Parse title from response
     const titleMatch = fullText.match(/TITLE:\s*(.+)/);
-    const title = titleMatch ? titleMatch[1].trim() : `${spell.name} - ${genre.name}`;
+    const title = titleMatch
+      ? titleMatch[1].trim()
+      : `${spell.name} - ${genre.name}`;
 
     const generation = new this.generationModel({
       spellId: dto.spellId,

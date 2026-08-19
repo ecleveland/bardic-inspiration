@@ -59,7 +59,7 @@ export const GENRES_SEED = [
     meterPattern: 'Strong duple meter, work-song rhythm',
     rhymeScheme: 'Varies — often ABAB with call-and-response',
     exampleLines: [
-      "Way-hey and up she rises!",
+      'Way-hey and up she rises!',
       "We'll sail the seas till fortune finds us!",
       'Heave ho, me hearties, pull together!',
     ],
@@ -108,7 +108,7 @@ export const GENRES_SEED = [
     rhymeScheme: 'AABB with internal rhymes',
     exampleLines: [
       'Come and dance in the ring of the moon!',
-      "The fiddler plays a bewildering tune!",
+      'The fiddler plays a bewildering tune!',
       "And if you step in, you won't leave too soon!",
     ],
   },
@@ -189,8 +189,8 @@ export const GENRES_SEED = [
     meterPattern: 'Varied — emphasis on catchiness',
     rhymeScheme: 'ABAB or AABB',
     exampleLines: [
-      "You light me up like a spell in the dark,",
-      "Every word you say leaves a magical mark,",
+      'You light me up like a spell in the dark,',
+      'Every word you say leaves a magical mark,',
       "Can't get you out of my head, you're my spark.",
     ],
   },
@@ -206,7 +206,7 @@ export const GENRES_SEED = [
     rhymeScheme: 'ABAB or free with strong rhythm',
     exampleLines: [
       "I've got thunder in my veins tonight,",
-      "Gonna burn these walls down with the light,",
+      'Gonna burn these walls down with the light,',
       "Stand up, stand tall, we're ready for the fight.",
     ],
   },
@@ -254,8 +254,8 @@ export const GENRES_SEED = [
     rhymeScheme: 'AAB (first line repeats, third line resolves)',
     exampleLines: [
       'Woke up this morning with a hex upon my soul,',
-      "I said I woke up this morning, hex heavy on my soul,",
-      "Gonna find me a cleric, make this broken body whole.",
+      'I said I woke up this morning, hex heavy on my soul,',
+      'Gonna find me a cleric, make this broken body whole.',
     ],
   },
   {
@@ -287,7 +287,7 @@ export const GENRES_SEED = [
     exampleLines: [
       'Down a long dirt road where the wild things grow,',
       'I learned my magic where the river runs slow,',
-      "Some things a bard just naturally knows.",
+      'Some things a bard just naturally knows.',
     ],
   },
   {
@@ -319,7 +319,7 @@ export const GENRES_SEED = [
     exampleLines: [
       "I don't need your rules, I've got my own spell!",
       'Kings and queens can go straight to hell!',
-      "Three chords and the truth is all I need to tell!",
+      'Three chords and the truth is all I need to tell!',
     ],
   },
   {
@@ -365,9 +365,9 @@ export const GENRES_SEED = [
     meterPattern: 'Flowing, syncopated, groove-based',
     rhymeScheme: 'ABAB with melismatic phrasing',
     exampleLines: [
-      "Baby, let me cast my spell on you tonight,",
-      "Every word I sing gonna make it feel right,",
-      "Wrapped up in this magic, hold on tight.",
+      'Baby, let me cast my spell on you tonight,',
+      'Every word I sing gonna make it feel right,',
+      'Wrapped up in this magic, hold on tight.',
     ],
   },
 ];

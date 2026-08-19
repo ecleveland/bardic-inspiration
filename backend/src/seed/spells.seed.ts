@@ -16,7 +16,14 @@ export const SPELLS_SEED = [
     type: 'cantrip',
     description:
       'You create up to four torch-sized lights within range, making them appear as torches, lanterns, or glowing orbs that hover in the air.',
-    tags: ['light', 'utility', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'light',
+      'utility',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Friends',
@@ -96,7 +103,7 @@ export const SPELLS_SEED = [
     school: 'Divination',
     type: 'cantrip',
     description:
-      'You extend your hand and point a finger at a target in range. Your magic grants you a brief insight into the target\'s defenses, granting you advantage on your first attack roll against the target.',
+      "You extend your hand and point a finger at a target in range. Your magic grants you a brief insight into the target's defenses, granting you advantage on your first attack roll against the target.",
     tags: ['combat', 'divination', 'concentration', 'somatic'],
   },
   {
@@ -206,7 +213,7 @@ export const SPELLS_SEED = [
     school: 'Transmutation',
     type: 'spell',
     description:
-      'Choose up to five falling creatures within range. A falling creature\'s rate of descent slows to 60 feet per round and takes no falling damage.',
+      "Choose up to five falling creatures within range. A falling creature's rate of descent slows to 60 feet per round and takes no falling damage.",
     tags: ['utility', 'protection', 'reaction', 'verbal', 'material'],
   },
   {
@@ -251,7 +258,7 @@ export const SPELLS_SEED = [
     school: 'Transmutation',
     type: 'spell',
     description:
-      'You touch a creature. The target\'s speed increases by 10 feet until the spell ends.',
+      "You touch a creature. The target's speed increases by 10 feet until the spell ends.",
     tags: ['buff', 'movement', 'verbal', 'somatic', 'material'],
   },
   {
@@ -288,7 +295,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'A creature of your choice that you can see within range perceives everything as hilariously funny and falls into fits of laughter. The target falls prone and becomes incapacitated.',
-    tags: ['control', 'incapacitate', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'control',
+      'incapacitate',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Thunderwave',
@@ -343,8 +357,16 @@ export const SPELLS_SEED = [
     school: 'Conjuration',
     type: 'spell',
     description:
-      'You fill the air with spinning daggers in a 5-foot cube. A creature takes 4d4 slashing damage when it enters the spell\'s area for the first time on a turn or starts its turn there.',
-    tags: ['damage', 'slashing', 'area', 'concentration', 'verbal', 'somatic', 'material'],
+      "You fill the air with spinning daggers in a 5-foot cube. A creature takes 4d4 slashing damage when it enters the spell's area for the first time on a turn or starts its turn there.",
+    tags: [
+      'damage',
+      'slashing',
+      'area',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Crown of Madness',
@@ -362,7 +384,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'For the duration, you can read the thoughts of certain creatures. You can focus your mind on any one creature within 30 feet and learn its surface thoughts.',
-    tags: ['detection', 'telepathy', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'detection',
+      'telepathy',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Enhance Ability',
@@ -398,7 +427,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'Choose a humanoid that you can see within range. The target must succeed on a Wisdom saving throw or be paralyzed for the duration.',
-    tags: ['control', 'paralysis', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'control',
+      'paralysis',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Invisibility',
@@ -406,8 +442,15 @@ export const SPELLS_SEED = [
     school: 'Illusion',
     type: 'spell',
     description:
-      'A creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is invisible as long as it is on the target\'s person.',
-    tags: ['illusion', 'stealth', 'concentration', 'verbal', 'somatic', 'material'],
+      "A creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is invisible as long as it is on the target's person.",
+    tags: [
+      'illusion',
+      'stealth',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Knock',
@@ -442,8 +485,15 @@ export const SPELLS_SEED = [
     school: 'Divination',
     type: 'spell',
     description:
-      'Describe or name an object that is familiar to you. You sense the direction to the object\'s location, as long as that object is within 1,000 feet of you.',
-    tags: ['detection', 'utility', 'concentration', 'verbal', 'somatic', 'material'],
+      "Describe or name an object that is familiar to you. You sense the direction to the object's location, as long as that object is within 1,000 feet of you.",
+    tags: [
+      'detection',
+      'utility',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Magic Mouth',
@@ -461,7 +511,15 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'You craft an illusion that takes root in the mind of a creature you can see within range. The target perceives the phantasm as real and rationalizes any illogical outcomes.',
-    tags: ['illusion', 'damage', 'psychic', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'illusion',
+      'damage',
+      'psychic',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'See Invisibility',
@@ -497,7 +555,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'You cause up to ten words to form in a part of the sky you can see. The words appear to be made of cloud and remain for the duration before dispersing.',
-    tags: ['communication', 'utility', 'concentration', 'ritual', 'verbal', 'somatic'],
+    tags: [
+      'communication',
+      'utility',
+      'concentration',
+      'ritual',
+      'verbal',
+      'somatic',
+    ],
   },
   {
     name: 'Suggestion',
@@ -535,7 +600,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'You create an invisible sensor within range in a location familiar to you. You can see or hear through the sensor as if you were there.',
-    tags: ['detection', 'scrying', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'detection',
+      'scrying',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Dispel Magic',
@@ -552,8 +624,16 @@ export const SPELLS_SEED = [
     school: 'Illusion',
     type: 'spell',
     description:
-      'You project a phantasmal image of a creature\'s worst fears. Each creature in a 30-foot cone must succeed on a Wisdom saving throw or drop what it is holding and become frightened.',
-    tags: ['control', 'fear', 'area', 'concentration', 'verbal', 'somatic', 'material'],
+      "You project a phantasmal image of a creature's worst fears. Each creature in a 30-foot cone must succeed on a Wisdom saving throw or drop what it is holding and become frightened.",
+    tags: [
+      'control',
+      'fear',
+      'area',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Feign Death',
@@ -580,7 +660,15 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'You create a twisting pattern of colors that weaves through the air in a 30-foot cube. Each creature that sees it must make a Wisdom save or become charmed, incapacitated, and have speed reduced to 0.',
-    tags: ['control', 'charm', 'incapacitate', 'area', 'concentration', 'somatic', 'material'],
+    tags: [
+      'control',
+      'charm',
+      'incapacitate',
+      'area',
+      'concentration',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: "Leomund's Tiny Hut",
@@ -633,7 +721,7 @@ export const SPELLS_SEED = [
     school: 'Necromancy',
     type: 'spell',
     description:
-      'You grant the semblance of life and intelligence to a corpse, allowing it to answer up to five questions. The corpse\'s knowledge is limited to what it knew in life.',
+      "You grant the semblance of life and intelligence to a corpse, allowing it to answer up to five questions. The corpse's knowledge is limited to what it knew in life.",
     tags: ['communication', 'necromancy', 'verbal', 'somatic', 'material'],
   },
   {
@@ -680,7 +768,7 @@ export const SPELLS_SEED = [
     school: 'Enchantment',
     type: 'spell',
     description:
-      'This spell assaults and twists creatures\' minds, spawning delusions and provoking uncontrolled actions. Each creature in a 10-foot sphere must succeed on a Wisdom saving throw or be affected.',
+      "This spell assaults and twists creatures' minds, spawning delusions and provoking uncontrolled actions. Each creature in a 10-foot sphere must succeed on a Wisdom saving throw or be affected.",
     tags: ['control', 'area', 'concentration', 'verbal', 'somatic', 'material'],
   },
   {
@@ -698,7 +786,7 @@ export const SPELLS_SEED = [
     school: 'Abjuration',
     type: 'spell',
     description:
-      'You touch a willing creature. For the duration, the target\'s movement is unaffected by difficult terrain, and spells and effects can neither reduce its speed nor cause it to be paralyzed or restrained.',
+      "You touch a willing creature. For the duration, the target's movement is unaffected by difficult terrain, and spells and effects can neither reduce its speed nor cause it to be paralyzed or restrained.",
     tags: ['buff', 'movement', 'verbal', 'somatic', 'material'],
   },
   {
@@ -708,7 +796,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'You or a creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is invisible. The target remains invisible even when attacking or casting spells.',
-    tags: ['illusion', 'stealth', 'combat', 'concentration', 'verbal', 'somatic'],
+    tags: [
+      'illusion',
+      'stealth',
+      'combat',
+      'concentration',
+      'verbal',
+      'somatic',
+    ],
   },
   {
     name: 'Hallucinatory Terrain',
@@ -725,8 +820,15 @@ export const SPELLS_SEED = [
     school: 'Divination',
     type: 'spell',
     description:
-      'Describe or name a creature that is familiar to you. You sense the direction to the creature\'s location, as long as that creature is within 1,000 feet of you.',
-    tags: ['detection', 'tracking', 'concentration', 'verbal', 'somatic', 'material'],
+      "Describe or name a creature that is familiar to you. You sense the direction to the creature's location, as long as that creature is within 1,000 feet of you.",
+    tags: [
+      'detection',
+      'tracking',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Polymorph',
@@ -735,7 +837,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'This spell transforms a creature that you can see within range into a new beast form. An unwilling creature must make a Wisdom saving throw to avoid the effect.',
-    tags: ['transmutation', 'control', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'transmutation',
+      'control',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
 
   // ===== 5TH LEVEL =====
@@ -772,7 +881,7 @@ export const SPELLS_SEED = [
     school: 'Illusion',
     type: 'spell',
     description:
-      'This spell shapes a creature\'s dreams. You can make the messenger appear in the target\'s dreams and converse with the target, or turn the dream into a nightmare dealing psychic damage.',
+      "This spell shapes a creature's dreams. You can make the messenger appear in the target's dreams and converse with the target, or turn the dream into a nightmare dealing psychic damage.",
     tags: ['communication', 'psychic', 'verbal', 'somatic', 'material'],
   },
   {
@@ -800,7 +909,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'Choose a creature that you can see within range. The target must succeed on a Wisdom saving throw or be paralyzed for the duration. This spell works on any creature type.',
-    tags: ['control', 'paralysis', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'control',
+      'paralysis',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Legend Lore',
@@ -835,7 +951,7 @@ export const SPELLS_SEED = [
     school: 'Enchantment',
     type: 'spell',
     description:
-      'You attempt to reshape another creature\'s memories. One creature that you can see must make a Wisdom saving throw. On a failure, you can modify its memories of an event within the last 24 hours.',
+      "You attempt to reshape another creature's memories. One creature that you can see must make a Wisdom saving throw. On a failure, you can modify its memories of an event within the last 24 hours.",
     tags: ['charm', 'control', 'concentration', 'verbal', 'somatic'],
   },
   {
@@ -863,7 +979,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'You can see and hear a particular creature you choose that is on the same plane of existence as you. The target must make a Wisdom saving throw, modified by how well you know it.',
-    tags: ['detection', 'scrying', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'detection',
+      'scrying',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Seeming',
@@ -901,7 +1024,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'This spell allows you to find the shortest, most direct physical route to a specific fixed location that you are familiar with on the same plane of existence.',
-    tags: ['utility', 'navigation', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'utility',
+      'navigation',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Guards and Wards',
@@ -993,7 +1123,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'You conjure an extradimensional dwelling in range that lasts for the duration. It has a magnificent entrance and contains a series of furnished rooms with food, servants, and comfort.',
-    tags: ['utility', 'conjuration', 'shelter', 'verbal', 'somatic', 'material'],
+    tags: [
+      'utility',
+      'conjuration',
+      'shelter',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: "Mordenkainen's Sword",
@@ -1113,7 +1250,7 @@ export const SPELLS_SEED = [
     school: 'Divination',
     type: 'spell',
     description:
-      'You touch a willing creature and bestow a limited ability to see into the immediate future. The target can\'t be surprised, has advantage on attack rolls, ability checks, and saving throws.',
+      "You touch a willing creature and bestow a limited ability to see into the immediate future. The target can't be surprised, has advantage on attack rolls, ability checks, and saving throws.",
     tags: ['buff', 'divination', 'verbal', 'somatic', 'material'],
   },
   {
@@ -1123,7 +1260,14 @@ export const SPELLS_SEED = [
     type: 'spell',
     description:
       'You transform up to ten creatures that you can see within range. Each target is transformed into a new beast form of your choice, following the same rules as polymorph.',
-    tags: ['transmutation', 'control', 'concentration', 'verbal', 'somatic', 'material'],
+    tags: [
+      'transmutation',
+      'control',
+      'concentration',
+      'verbal',
+      'somatic',
+      'material',
+    ],
   },
   {
     name: 'Power Word Heal',
@@ -1178,7 +1322,7 @@ export const SPELLS_SEED = [
     school: 'Class Feature',
     type: 'class_feature',
     description:
-      'You can add half your proficiency bonus, rounded down, to any ability check you make that doesn\'t already include your proficiency bonus.',
+      "You can add half your proficiency bonus, rounded down, to any ability check you make that doesn't already include your proficiency bonus.",
     tags: ['utility', 'passive', 'proficiency'],
   },
   {
@@ -1286,7 +1430,7 @@ export const SPELLS_SEED = [
     type: 'subclass_feature',
     subclass: 'College of Whispers',
     description:
-      'You gain the ability to make your weapon attacks magically toxic to a creature\'s mind. When you hit with a weapon attack, you can expend one Bardic Inspiration die to deal extra psychic damage.',
+      "You gain the ability to make your weapon attacks magically toxic to a creature's mind. When you hit with a weapon attack, you can expend one Bardic Inspiration die to deal extra psychic damage.",
     tags: ['damage', 'psychic', 'combat'],
   },
   {
@@ -1296,7 +1440,7 @@ export const SPELLS_SEED = [
     type: 'subclass_feature',
     subclass: 'College of Whispers',
     description:
-      'You gain the ability to adopt a humanoid\'s persona. When a humanoid dies within 30 feet of you, you can capture its shadow, later using it to perfectly disguise yourself as that person.',
+      "You gain the ability to adopt a humanoid's persona. When a humanoid dies within 30 feet of you, you can capture its shadow, later using it to perfectly disguise yourself as that person.",
     tags: ['stealth', 'social', 'deception'],
   },
   {
@@ -1306,7 +1450,7 @@ export const SPELLS_SEED = [
     type: 'subclass_feature',
     subclass: 'College of Whispers',
     description:
-      'You gain the ability to weave dark magic into your words and tap into a creature\'s deepest fears. The creature is magically charmed and obeys you as if you know its darkest secret.',
+      "You gain the ability to weave dark magic into your words and tap into a creature's deepest fears. The creature is magically charmed and obeys you as if you know its darkest secret.",
     tags: ['charm', 'control', 'fear'],
   },
   {

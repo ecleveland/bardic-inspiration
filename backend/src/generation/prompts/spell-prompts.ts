@@ -5,9 +5,7 @@ export function getSpellContext(spell: {
   school: string;
 }): string {
   const levelLabel =
-    spell.level === 0
-      ? 'cantrip'
-      : `level ${spell.level} spell`;
+    spell.level === 0 ? 'cantrip' : `level ${spell.level} spell`;
 
   return `The spell is "${spell.name}", a ${levelLabel} from the school of ${spell.school}. ${spell.description}
 
