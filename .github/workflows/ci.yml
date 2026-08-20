@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A new push to a PR makes the in-flight run irrelevant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Matches node:20-alpine in backend/Dockerfile and frontend/Dockerfile.
+  # CI should build on the runtime that actually ships.
+  NODE_VERSION: '20.x'
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+
+      # lint:check, not lint — the latter passes --fix and would rewrite files.
+      - name: Lint
+        run: npm run lint:check
+
+      # Every spec mocks its Mongoose model, so no database service is needed.
+      # test/app.e2e-spec.ts is the only thing that would want one and jest's
+      # rootDir excludes it.
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint:check
+
+      # next build type-checks, which is the only type coverage the frontend
+      # has until VEG-89 adds a test runner.
+      - name: Build
+        run: npm run build

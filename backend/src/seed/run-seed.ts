@@ -9,4 +9,4 @@ async function bootstrap() {
   await app.close();
   console.log('Seeding complete!');
 }
-bootstrap();
+void bootstrap();

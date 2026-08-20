@@ -13,7 +13,6 @@ import { GenresService } from '../genres/genres.service';
 import { TemplatesService } from '../templates/templates.service';
 
 jest.mock('@anthropic-ai/sdk', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const actual = jest.requireActual('@anthropic-ai/sdk');
   const mockCreate = jest.fn();
   const MockAnthropic = jest.fn().mockImplementation(() => ({
@@ -22,7 +21,6 @@ jest.mock('@anthropic-ai/sdk', () => {
   // The service does instanceof checks against Anthropic.APIError, so the mock
   // has to carry the real classes. They live on the prototype chain rather than
   // as own properties, so Object.assign over the class does not pick them up.
-  /* eslint-disable @typescript-eslint/no-unsafe-member-access */
   Object.assign(MockAnthropic, {
     APIError: actual.default.APIError,
     RateLimitError: actual.default.RateLimitError,
@@ -30,7 +28,6 @@ jest.mock('@anthropic-ai/sdk', () => {
     AuthenticationError: actual.default.AuthenticationError,
     InternalServerError: actual.default.InternalServerError,
   });
-  /* eslint-enable @typescript-eslint/no-unsafe-member-access */
   return { __esModule: true, default: MockAnthropic, _mockCreate: mockCreate };
 });
 

@@ -17,8 +17,6 @@ export class HealthController {
   @Get()
   @HealthCheck()
   check() {
-    return this.health.check([
-      () => this.mongoose.pingCheck('mongodb'),
-    ]);
+    return this.health.check([() => this.mongoose.pingCheck('mongodb')]);
   }
 }
