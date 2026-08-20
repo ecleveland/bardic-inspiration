@@ -11,7 +11,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: '22.x'
+  # Matches node:20-alpine in backend/Dockerfile and frontend/Dockerfile.
+  # CI should build on the runtime that actually ships.
+  NODE_VERSION: '20.x'
 
 permissions:
   contents: read
