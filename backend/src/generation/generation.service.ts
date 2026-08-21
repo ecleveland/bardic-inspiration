@@ -41,18 +41,24 @@ ${genreStyle}`;
   return prompt;
 }
 
-// Anthropic error messages can carry key fragments and request internals, so
-// none of them reach the client. Most specific class first.
+// Anthropic error messages can carry request internals, so none of them reach
+// the client. The original is kept as `cause`: AllExceptionsFilter logs it, and
+// it is the only place the upstream status and request id survive. Without it
+// an outage logs a constant message and a stack pointing back at this function.
+// Most specific class first.
 function toUpstreamException(error: unknown): unknown {
   if (error instanceof Anthropic.RateLimitError) {
     return new HttpException(
       'Lyric generation is busy, try again shortly',
       429,
+      { cause: error },
     );
   }
   // Every SDK error class extends APIError, including APIConnectionError.
   if (error instanceof Anthropic.APIError) {
-    return new BadGatewayException('Lyric generation is unavailable');
+    return new BadGatewayException('Lyric generation is unavailable', {
+      cause: error,
+    });
   }
   // Not an upstream failure. Let it bubble to the controller.
   return error;

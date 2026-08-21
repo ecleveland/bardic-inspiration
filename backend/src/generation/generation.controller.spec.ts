@@ -4,6 +4,7 @@ import type { Server } from 'http';
 import request from 'supertest';
 import { GenerationController } from './generation.controller';
 import { GenerationService } from './generation.service';
+import { AllExceptionsFilter } from '../common/filters';
 
 const VALID_ID = '507f1f77bcf86cd799439011';
 const body = { spellId: VALID_ID, genreId: VALID_ID };
@@ -26,6 +27,10 @@ describe('GenerationController', () => {
     }).compile();
 
     app = module.createNestApplication();
+    // Registered in main.ts, so the spec has to register it too. Without it
+    // these assertions pass against Nest's default filter and prove nothing
+    // about the wiring that actually ships.
+    app.useGlobalFilters(new AllExceptionsFilter());
     await app.init();
     server = app.getHttpServer() as Server;
   });
@@ -34,7 +39,7 @@ describe('GenerationController', () => {
     await app.close();
   });
 
-  describe('POST /generate error handling (VEG-77)', () => {
+  describe('POST /generate error handling (VEG-77, filter since VEG-66)', () => {
     it('should pass a service HttpException through unchanged', async () => {
       generationService.generate.mockRejectedValue(
         new NotFoundException('Spell with id abc not found'),
