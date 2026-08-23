@@ -69,7 +69,11 @@ jobs:
       - name: Lint
         run: npm run lint:check
 
-      # next build type-checks, which is the only type coverage the frontend
-      # has until VEG-89 adds a test runner.
+      # vitest run, not vitest — the bare command watches and would hang CI.
+      - name: Test
+        run: npm test
+
+      # next build also type-checks, including the spec files, since tsconfig
+      # picks up every .ts/.tsx under the package.
       - name: Build
         run: npm run build
