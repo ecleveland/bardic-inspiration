@@ -337,6 +337,70 @@ describe('GenerationService', () => {
           ).not.toContain('sk-ant-secret123');
         });
 
+        // Without this the filter logs a constant message and a stack pointing
+        // at toUpstreamException, so a real outage leaves no usable trace.
+        it('should keep the upstream error as the cause', async () => {
+          const upstream = new MockAnthropic.InternalServerError(
+            529,
+            { type: 'overloaded_error' },
+            'overloaded',
+            new Headers({ 'request-id': 'req_abc123' }),
+          );
+          mockCreate.mockRejectedValue(upstream);
+          const error: unknown = await generate().catch((e: unknown) => e);
+          expect((error as Error).cause).toBe(upstream);
+        });
+
+        it('should keep the cause on a rate limit too', async () => {
+          const upstream = new MockAnthropic.RateLimitError(
+            429,
+            { type: 'rate_limit_error' },
+            'rate limit exceeded',
+            new Headers(),
+          );
+          mockCreate.mockRejectedValue(upstream);
+          const error: unknown = await generate().catch((e: unknown) => e);
+          expect((error as Error).cause).toBe(upstream);
+        });
+
+        // Asserting on the exception the service really constructs, not a
+        // stand-in. A raw HttpException would have hidden the fact that
+        // BadGatewayException's second argument is descriptionOrOptions, so
+        // passing { cause } there silently drops the `error` field.
+        it('should keep the standard body fields on the 502', async () => {
+          mockCreate.mockRejectedValue(
+            new MockAnthropic.InternalServerError(
+              529,
+              { type: 'overloaded_error' },
+              'overloaded',
+              new Headers(),
+            ),
+          );
+          const error: unknown = await generate().catch((e: unknown) => e);
+          expect((error as HttpException).getResponse()).toMatchObject({
+            statusCode: 502,
+            error: 'Bad Gateway',
+            message: 'Lyric generation is unavailable',
+          });
+        });
+
+        it('should keep the standard body fields on the 429', async () => {
+          mockCreate.mockRejectedValue(
+            new MockAnthropic.RateLimitError(
+              429,
+              { type: 'rate_limit_error' },
+              'rate limit exceeded',
+              new Headers(),
+            ),
+          );
+          const error: unknown = await generate().catch((e: unknown) => e);
+          expect((error as HttpException).getResponse()).toMatchObject({
+            statusCode: 429,
+            error: 'Too Many Requests',
+            message: 'Lyric generation is busy, try again shortly',
+          });
+        });
+
         it('should not swallow a non-Anthropic failure', async () => {
           mockCreate.mockRejectedValue(new Error('something else broke'));
           await expect(generate()).rejects.toThrow('something else broke');
