@@ -16,7 +16,7 @@ function hostFor(method: string, url: string, headersSent = false) {
   const host = {
     switchToHttp: () => ({
       getResponse: () => ({ status, json, headersSent }),
-      getRequest: () => ({ method, url }),
+      getRequest: () => ({ method, url, originalUrl: url }),
     }),
   } as unknown as ArgumentsHost;
   return { host, status, json };
@@ -117,17 +117,32 @@ describe('AllExceptionsFilter logging', () => {
   });
 
   describe('cause chain', () => {
-    it('should log the cause when the exception carries one', () => {
+    it('should summarise the cause into the log line', () => {
       const { host } = hostFor('POST', '/api/generate');
-      const upstream = new Error('anthropic 529 overloaded');
+      const upstream = Object.assign(new Error('overloaded'), {
+        status: 529,
+        requestID: 'req_abc123',
+      });
       filter.catch(
         new HttpException('Lyric generation is unavailable', 502, {
           cause: upstream,
         }),
         host,
       );
-      const logged = errorSpy.mock.calls.flat();
-      expect(logged).toContain(upstream);
+      const logged = errorSpy.mock.calls.flat().join(' ');
+      expect(logged).toContain('status=529');
+      expect(logged).toContain('requestId=req_abc123');
+    });
+
+    // The stack would point at the mapper, not the outage, and a liveness
+    // probe against a down dependency would write one per poll.
+    it('should not attach a stack for an exception we constructed', () => {
+      const { host } = hostFor('POST', '/api/generate');
+      filter.catch(
+        new HttpException('Lyric generation is unavailable', 502),
+        host,
+      );
+      expect(errorSpy.mock.calls[0]).toHaveLength(1);
     });
   });
 

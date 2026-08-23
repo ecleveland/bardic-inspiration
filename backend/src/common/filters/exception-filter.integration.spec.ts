@@ -4,8 +4,10 @@ import {
   Get,
   HttpException,
   INestApplication,
+  Logger,
   NotFoundException,
   Post,
+  ServiceUnavailableException,
   ValidationPipe,
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -23,8 +25,20 @@ class ProbeDto {
   nickname: string;
 }
 
+// What @nestjs/terminus throws when a health indicator reports down.
+const HEALTH_RESULT = {
+  status: 'error',
+  error: { mongodb: { status: 'down', message: 'connection refused' } },
+  details: { mongodb: { status: 'down', message: 'connection refused' } },
+};
+
 @Controller('probe')
 class ProbeController {
+  @Get('health')
+  health() {
+    throw new ServiceUnavailableException(HEALTH_RESULT);
+  }
+
   @Get('raw')
   raw() {
     throw new Error(
@@ -69,8 +83,12 @@ class ProbeController {
 describe('AllExceptionsFilter over HTTP (VEG-66)', () => {
   let app: INestApplication;
   let server: Server;
+  let errorSpy: jest.SpyInstance;
 
   beforeEach(async () => {
+    // Several cases here drive the 5xx branch on purpose; without this the
+    // suite prints real stack traces to stderr on a green run.
+    errorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation();
     const module = await Test.createTestingModule({
       controllers: [ProbeController],
     }).compile();
@@ -85,6 +103,7 @@ describe('AllExceptionsFilter over HTTP (VEG-66)', () => {
   });
 
   afterEach(async () => {
+    errorSpy.mockRestore();
     await app.close();
   });
 
@@ -112,12 +131,15 @@ describe('AllExceptionsFilter over HTTP (VEG-66)', () => {
     });
 
     it('should not forward a message just because the error carries statusCode', async () => {
-      // Nest's default filter returns this one's message verbatim.
+      // Nest's default filter returns this one's message verbatim. The status
+      // is honoured, since body-parser reports 413 and 415 this way, but the
+      // message is not: nobody here authored it.
       const res = await request(server).get('/probe/http-error-shape');
-      expect(res.status).toBe(500);
+      expect(res.status).toBe(418);
       expect(JSON.stringify(res.body)).not.toContain(
         'never meant for a client',
       );
+      expect(res.body.message).toBe('Internal server error');
     });
 
     it('should never include a stack trace', async () => {
@@ -160,6 +182,49 @@ describe('AllExceptionsFilter over HTTP (VEG-66)', () => {
         path: '/probe/validated',
       });
       expect(typeof res.body.timestamp).toBe('string');
+    });
+  });
+
+  // Nest's routes-resolver maps only SyntaxError and URIError to an
+  // HttpException. Everything else body-parser raises (PayloadTooLargeError at
+  // 413, charset and encoding failures at 415, request.aborted at 400) arrives
+  // as a plain Error carrying a statusCode, which BaseExceptionFilter honoured
+  // and a naive replacement turns into a 500.
+  describe('errors carrying a real status', () => {
+    it('should keep 413 for an oversized body', async () => {
+      const huge = JSON.stringify({ blob: 'x'.repeat(200 * 1024) });
+      const res = await request(server)
+        .post('/probe/validated')
+        .set('Content-Type', 'application/json')
+        .send(huge);
+
+      expect(res.status).toBe(413);
+    });
+
+    it('should still send a generic message for it', async () => {
+      const huge = JSON.stringify({ blob: 'x'.repeat(200 * 1024) });
+      const res = await request(server)
+        .post('/probe/validated')
+        .set('Content-Type', 'application/json')
+        .send(huge);
+
+      expect(JSON.stringify(res.body)).not.toContain('entity.too.large');
+    });
+  });
+
+  // terminus puts the whole HealthCheckResult in the exception payload. A
+  // filter that rebuilds the body from `message` alone reduces it to the
+  // exception's class name and the endpoint stops reporting anything useful.
+  describe('object payloads', () => {
+    it('should forward a health check result intact', async () => {
+      const res = await request(server).get('/probe/health');
+      expect(res.status).toBe(503);
+      expect(res.body).toMatchObject(HEALTH_RESULT);
+    });
+
+    it('should not flatten it to the exception class name', async () => {
+      const res = await request(server).get('/probe/health');
+      expect(res.body.message).not.toBe('Service Unavailable Exception');
     });
   });
 

@@ -1,7 +1,7 @@
 # start-ticket overrides: Bardic Inspiration
 
 Project-specific values for the `/start-ticket` workflow. Two npm packages,
-`backend/` (NestJS) and `frontend/` (Next.js), no monorepo tooling — every
+`backend/` (NestJS) and `frontend/` (Next.js), no monorepo tooling. Every
 command runs from a package root, not the repo root.
 
 ## Pre-flight
@@ -22,7 +22,7 @@ From `backend/`:
 - One case: `npx jest src/path/to/thing.spec.ts -t "name fragment"`
 - One module: `npx jest src/generation`
 
-The frontend has no test runner yet — that is VEG-89. Until it lands,
+The frontend has no test runner yet. That is VEG-89. Until it lands,
 `next build` is the only frontend check, and it type-checks.
 
 ## Verification gate
@@ -79,8 +79,8 @@ the issue, and the `🤖 Generated with [Claude Code](https://claude.com/claude-
 trailer. Bodies explain the reasoning and call out deliberate behavior changes
 and anything left out of scope.
 
-Stage only files relevant to the change. Never `git add -A` — `backend/coverage/`
-and `.claude/settings.local.json` are gitignored but new build artifacts appear
+Stage only files relevant to the change. Never `git add -A`. `backend/coverage/`
+and `.claude/settings.local.json` are gitignored, but new build artifacts appear
 from time to time.
 
 ## Branch protection
@@ -95,7 +95,7 @@ merge.
 Use the skill defaults (skip / standard / deep). Treat these as risk triggers
 for this project, escalating to **deep**:
 
-- Anything under `src/common/` — it is shared by every module.
+- Anything under `src/common/`, which every module shares.
 - Auth-adjacent or input-validation code: pipes, DTO validators, CORS, Helmet,
   rate limiting, the global exception filter.
 - Anything touching the Anthropic call path, since failures there cost money
