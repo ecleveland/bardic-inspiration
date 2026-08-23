@@ -14,6 +14,7 @@ function hostFor(method: string, url: string, headersSent = false) {
   const json = jest.fn();
   const status = jest.fn().mockReturnValue({ json });
   const host = {
+    getType: () => 'http',
     switchToHttp: () => ({
       getResponse: () => ({ status, json, headersSent }),
       getRequest: () => ({ method, url, originalUrl: url }),
@@ -113,6 +114,54 @@ describe('AllExceptionsFilter logging', () => {
       const { host } = hostFor('GET', '/api/spells', true);
       filter.catch(new Error('thrown after send'), host);
       expect(errorSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // Every Anthropic SDK error class leaves `name` as the literal "Error", so a
+  // log keyed on it cannot tell a bad key from an overload from a socket hang
+  // up. The earlier version of this test used Object.assign(new Error(...)),
+  // where "Error" is legitimately correct, and hid the bug.
+  describe('identifying the cause', () => {
+    class RateLimitError extends Error {}
+    class APIConnectionError extends Error {}
+
+    it.each([
+      ['RateLimitError', RateLimitError],
+      ['APIConnectionError', APIConnectionError],
+    ])('should name the cause class %s', (expected, Ctor) => {
+      const { host } = hostFor('POST', '/api/generate');
+      const cause = new Ctor('upstream said no');
+      expect(cause.name).toBe('Error');
+
+      filter.catch(
+        new HttpException('Lyric generation is unavailable', 502, { cause }),
+        host,
+      );
+      expect(errorSpy.mock.calls.flat().join(' ')).toContain(expected);
+    });
+  });
+
+  // 429 is below the 5xx threshold, so an earlier version returned from log()
+  // before ever reading the cause. A throttling outage recorded nothing, which
+  // is the exact gap this filter exists to close.
+  describe('upstream 4xx', () => {
+    it('should log a 429 that carries a cause', () => {
+      const { host } = hostFor('POST', '/api/generate');
+      const cause = Object.assign(new Error('rate limited'), {
+        status: 429,
+        requestID: 'req_throttled',
+      });
+      filter.catch(new HttpException('busy', 429, { cause }), host);
+      expect(errorSpy.mock.calls.flat().join(' ')).toContain('req_throttled');
+    });
+
+    it('should still not log a 4xx with no cause', () => {
+      const { host } = hostFor('POST', '/api/generate');
+      filter.catch(
+        new BadRequestException(['spellId must be a mongodb id']),
+        host,
+      );
+      expect(errorSpy).not.toHaveBeenCalled();
     });
   });
 

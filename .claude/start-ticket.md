@@ -71,7 +71,7 @@ Commits: imperative subject with the ticket ID in parens, e.g.
 why, not what. Trailer:
 
 ```
-Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 ```
 
 PRs: ticket ID in the title, `Fixes VEG-NN` in the body so Linear transitions

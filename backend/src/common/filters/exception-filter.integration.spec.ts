@@ -139,7 +139,9 @@ describe('AllExceptionsFilter over HTTP (VEG-66)', () => {
       expect(JSON.stringify(res.body)).not.toContain(
         'never meant for a client',
       );
-      expect(res.body.message).toBe('Internal server error');
+      // The status text, not the authored message and not a blanket
+      // "Internal server error" that would contradict a 4xx status.
+      expect(res.body.message).toBe("I'm a Teapot");
     });
 
     it('should never include a stack trace', async () => {
@@ -201,6 +203,19 @@ describe('AllExceptionsFilter over HTTP (VEG-66)', () => {
       expect(res.status).toBe(413);
     });
 
+    it('should not call a caller mistake a server error', async () => {
+      // statusOf honours 413, so telling the caller "Internal server error"
+      // contradicts it. The fix is to send less data, not to retry.
+      const huge = JSON.stringify({ blob: 'x'.repeat(200 * 1024) });
+      const res = await request(server)
+        .post('/probe/validated')
+        .set('Content-Type', 'application/json')
+        .send(huge);
+
+      expect(res.body.message).not.toBe('Internal server error');
+      expect(res.body.error).toBe('Payload Too Large');
+    });
+
     it('should still send a generic message for it', async () => {
       const huge = JSON.stringify({ blob: 'x'.repeat(200 * 1024) });
       const res = await request(server)
@@ -220,6 +235,15 @@ describe('AllExceptionsFilter over HTTP (VEG-66)', () => {
       const res = await request(server).get('/probe/health');
       expect(res.status).toBe(503);
       expect(res.body).toMatchObject(HEALTH_RESULT);
+    });
+
+    it('should still carry the envelope fields', async () => {
+      // Forwarding the payload whole must not cost the fields every other
+      // branch guarantees, or no client can parse errors uniformly.
+      const res = await request(server).get('/probe/health');
+      expect(res.body.statusCode).toBe(503);
+      expect(typeof res.body.timestamp).toBe('string');
+      expect(res.body.path).toBe('/probe/health');
     });
 
     it('should not flatten it to the exception class name', async () => {

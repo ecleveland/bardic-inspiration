@@ -42,14 +42,25 @@ ${genreStyle}`;
 }
 
 // Anthropic error messages can carry request internals, so none of them reach
-// the client. The original is kept as `cause`: AllExceptionsFilter logs it, and
-// it is the only place the upstream status and request id survive. Without it
-// an outage logs a constant message and a stack pointing back at this function.
+// the client. The original is kept as `cause`, which is where the upstream
+// status and request id survive for AllExceptionsFilter to log. Without it an
+// outage records a constant message and a stack pointing back at this function.
+//
+// Both constructions look roundabout and are not. An options object in the
+// second slot of BadGatewayException lands in `descriptionOrOptions`, so the
+// response silently loses its `error` field unless the description is passed
+// alongside the cause. HttpException with a bare string produces a bare string
+// body rather than the usual envelope, hence createBody.
+//
 // Most specific class first.
 function toUpstreamException(error: unknown): unknown {
   if (error instanceof Anthropic.RateLimitError) {
     return new HttpException(
-      'Lyric generation is busy, try again shortly',
+      HttpException.createBody(
+        'Lyric generation is busy, try again shortly',
+        'Too Many Requests',
+        429,
+      ),
       429,
       { cause: error },
     );
@@ -57,10 +68,11 @@ function toUpstreamException(error: unknown): unknown {
   // Every SDK error class extends APIError, including APIConnectionError.
   if (error instanceof Anthropic.APIError) {
     return new BadGatewayException('Lyric generation is unavailable', {
+      description: 'Bad Gateway',
       cause: error,
     });
   }
-  // Not an upstream failure. Let it bubble to the controller.
+  // Not an upstream failure. AllExceptionsFilter sanitizes and logs it.
   return error;
 }
 
