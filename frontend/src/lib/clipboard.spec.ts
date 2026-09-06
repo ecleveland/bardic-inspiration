@@ -83,6 +83,17 @@ describe('copyText', () => {
     expect(document.querySelectorAll('textarea')).toHaveLength(0);
   });
 
+  it('reports failure rather than rejecting when the DOM refuses the scratch textarea', async () => {
+    // The boolean contract is a promise TypeScript cannot enforce, so it needs
+    // a test. Before this, the setup ran outside the try and copyText rejected.
+    setClipboard(undefined);
+    vi.spyOn(document.body, 'appendChild').mockImplementation(() => {
+      throw new Error('an extension ate the body');
+    });
+
+    await expect(copyText('a bawdy limerick')).resolves.toBe(false);
+  });
+
   it('puts the text in the scratch textarea it asks execCommand to copy', async () => {
     setClipboard(undefined);
     let copied: string | undefined;

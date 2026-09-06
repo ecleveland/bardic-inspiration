@@ -13,5 +13,8 @@ export default defineConfig({
     // Globals stay off: every spec imports describe/it/expect/vi from vitest,
     // which keeps eslint.config.mjs free of test-only environment config.
     globals: false,
+    // Restores anything vi.stubGlobal touched, so one spec forgetting to
+    // clean up cannot leak a stubbed fetch into the next file.
+    unstubGlobals: true,
   },
 });

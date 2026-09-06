@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import LyricsDisplay from './LyricsDisplay';
+import { deferred } from '@/test/fetch-stub';
 
 function setClipboard(writeText?: (text: string) => Promise<void>) {
   Object.defineProperty(navigator, 'clipboard', {
@@ -169,6 +170,30 @@ describe('LyricsDisplay', () => {
       await user.click(copyButton());
 
       expect(await screen.findByText('Copied!')).toBeInTheDocument();
+    });
+
+    it('ignores a second click while the first copy is still in flight', async () => {
+      const user = userEvent.setup();
+      const gate = deferred();
+      const writeText = vi
+        .fn()
+        .mockImplementationOnce(async () => {
+          await gate.promise;
+          throw new Error('permission denied');
+        })
+        .mockResolvedValue(undefined);
+      setClipboard(writeText);
+      setExecCommand(vi.fn().mockReturnValue(false));
+      render(<LyricsDisplay title="The Mocking Tide" lyrics="just the words" />);
+
+      await user.click(copyButton());
+      await user.click(copyButton());
+      gate.resolve();
+
+      // Without the guard the second click resolves first and reports success,
+      // then the first click settles and overwrites it with a stale failure.
+      expect(await screen.findByText('Copy failed')).toBeInTheDocument();
+      expect(writeText).toHaveBeenCalledTimes(1);
     });
 
     it('says the copy failed instead of claiming success (VEG-76)', async () => {

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import GenerateForm from './GenerateForm';
 import { deferred, stubFetch, type Route } from '@/test/fetch-stub';
 import { makeGeneration, makeGenre, makeSpell } from '@/test/fixtures';
@@ -50,10 +50,6 @@ let user: UserEvent;
 
 beforeEach(() => {
   user = userEvent.setup();
-});
-
-afterEach(() => {
-  vi.unstubAllGlobals();
 });
 
 describe('GenerateForm', () => {

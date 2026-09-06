@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import RatingStars from './RatingStars';
 import { deferred, stubFetch } from '@/test/fetch-stub';
 import { makeGeneration } from '@/test/fixtures';
@@ -10,10 +10,6 @@ const RATE_PATH = '/generations/generation-1/rate';
 function stars() {
   return screen.getAllByRole('button');
 }
-
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
 
 describe('RatingStars', () => {
   it('renders five stars and no score before anything is rated', () => {

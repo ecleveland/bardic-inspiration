@@ -21,16 +21,19 @@ export async function copyText(text: string): Promise<boolean> {
 
 function copyViaTextarea(text: string): boolean {
   const textarea = document.createElement('textarea');
-  textarea.value = text;
-  textarea.setAttribute('readonly', '');
-  // Off-screen but still focusable. `display: none` would make it unselectable
-  // and iOS zooms toward any focused field smaller than 16px.
-  textarea.style.position = 'fixed';
-  textarea.style.top = '-9999px';
-  textarea.style.fontSize = '16px';
-  document.body.appendChild(textarea);
-
+  // Everything that touches the document goes inside the try. `appendChild`
+  // can throw if something else on the page objects, and a throw here would
+  // reject the promise this module promises never rejects.
   try {
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    // Off-screen but still focusable. `display: none` would make it
+    // unselectable and iOS zooms toward any focused field smaller than 16px.
+    textarea.style.position = 'fixed';
+    textarea.style.top = '-9999px';
+    textarea.style.fontSize = '16px';
+    document.body.appendChild(textarea);
+
     textarea.focus();
     textarea.select();
     // execCommand is gone from the spec but is the only fallback that works
