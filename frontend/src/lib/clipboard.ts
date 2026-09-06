@@ -21,6 +21,9 @@ export async function copyText(text: string): Promise<boolean> {
 
 function copyViaTextarea(text: string): boolean {
   const textarea = document.createElement('textarea');
+  // Selecting the scratch textarea steals focus, and removing it would drop
+  // focus to body, sending a keyboard user's next Tab to the top of the page.
+  const previouslyFocused = document.activeElement;
   // Everything that touches the document goes inside the try. `appendChild`
   // can throw if something else on the page objects, and a throw here would
   // reject the promise this module promises never rejects.
@@ -44,5 +47,6 @@ function copyViaTextarea(text: string): boolean {
     return false;
   } finally {
     textarea.remove();
+    if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
   }
 }

@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Written by `npm run test:cov`. Gitignored, but eslint does not read
+    // .gitignore, so without this a local coverage run makes lint noisy.
+    "coverage/**",
   ]),
 ]);
 

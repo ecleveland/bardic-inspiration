@@ -152,6 +152,18 @@ describe('GenerateForm', () => {
    * place as the backstop if that button ever stops being disabled.
    */
   describe('the empty-selection guard', () => {
+    it('stays unreachable: the form has exactly one submit button and it is disabled', async () => {
+      const { form } = renderForm();
+      await screen.findByRole('button', { name: 'Sea Shanty' });
+
+      // Unreachability rests on every other button in the subtree carrying
+      // type="button". One added without it becomes the default button and
+      // makes the guard live, which is the day this assertion earns its keep.
+      const submits = form.querySelectorAll('button:not([type="button"])');
+      expect(submits).toHaveLength(1);
+      expect(submits[0]).toBeDisabled();
+    });
+
     it('refuses a submit with nothing selected', async () => {
       const { fetchStub, form } = renderForm({ '/generate': { body: makeGeneration() } });
 

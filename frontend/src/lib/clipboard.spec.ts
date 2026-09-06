@@ -94,6 +94,21 @@ describe('copyText', () => {
     await expect(copyText('a bawdy limerick')).resolves.toBe(false);
   });
 
+  it('gives focus back to whatever had it before the fallback ran', async () => {
+    setClipboard(undefined);
+    setExecCommand(vi.fn().mockReturnValue(true));
+    const button = document.createElement('button');
+    document.body.appendChild(button);
+    button.focus();
+
+    await copyText('a bawdy limerick');
+
+    // A keyboard user pressed Enter on the copy button. Losing focus to body
+    // would send their next Tab back to the top of the page.
+    expect(document.activeElement).toBe(button);
+    button.remove();
+  });
+
   it('puts the text in the scratch textarea it asks execCommand to copy', async () => {
     setClipboard(undefined);
     let copied: string | undefined;

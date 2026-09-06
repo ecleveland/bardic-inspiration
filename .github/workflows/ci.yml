@@ -69,11 +69,15 @@ jobs:
       - name: Lint
         run: npm run lint:check
 
+      # next build type-checks the route graph, which the spec files are not
+      # part of, and vitest strips types without checking them. Without this
+      # step nothing type-checks src/**/*.spec.* at all.
+      - name: Typecheck
+        run: npm run typecheck
+
       # vitest run, not vitest — the bare command watches and would hang CI.
       - name: Test
         run: npm test
 
-      # next build also type-checks, including the spec files, since tsconfig
-      # picks up every .ts/.tsx under the package.
       - name: Build
         run: npm run build

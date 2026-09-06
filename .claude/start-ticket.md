@@ -37,8 +37,13 @@ There is no `verify.sh`. Run what CI runs, in this order:
 
 ```
 cd backend  && npm run lint:check && npm test && npm run build
-cd frontend && npm run lint:check && npm test && npm run build
+cd frontend && npm run lint:check && npm run typecheck && npm test && npm run build
 ```
+
+**The frontend needs `typecheck` as its own step.** `next build` type-checks the
+route graph, and spec files are not in it, so a type error under
+`src/**/*.spec.*` builds green. Vitest strips types without checking them. The
+backend needs no equivalent because `nest build` runs `tsc` over everything.
 
 **Use `lint:check`, never `lint`.** The backend's `lint` script passes `--fix`,
 so running it rewrites files and reports success on code that does not
