@@ -22,8 +22,14 @@ From `backend/`:
 - One case: `npx jest src/path/to/thing.spec.ts -t "name fragment"`
 - One module: `npx jest src/generation`
 
-The frontend has no test runner yet. That is VEG-89. Until it lands,
-`next build` is the only frontend check, and it type-checks.
+From `frontend/` (vitest, added by VEG-89):
+
+- One file: `npx vitest run src/components/Thing.spec.tsx`
+- One case: `npx vitest run src/components/Thing.spec.tsx -t "name fragment"`
+- Watch: `npm run test:watch`
+
+`npm test` is `vitest run`. The bare `vitest` binary watches, so never put it
+in a script CI calls.
 
 ## Verification gate
 
@@ -31,8 +37,13 @@ There is no `verify.sh`. Run what CI runs, in this order:
 
 ```
 cd backend  && npm run lint:check && npm test && npm run build
-cd frontend && npm run lint:check && npm run build
+cd frontend && npm run lint:check && npm run typecheck && npm test && npm run build
 ```
+
+**The frontend needs `typecheck` as its own step.** `next build` type-checks the
+route graph, and spec files are not in it, so a type error under
+`src/**/*.spec.*` builds green. Vitest strips types without checking them. The
+backend needs no equivalent because `nest build` runs `tsc` over everything.
 
 **Use `lint:check`, never `lint`.** The backend's `lint` script passes `--fix`,
 so running it rewrites files and reports success on code that does not
@@ -54,6 +65,8 @@ suite exists when reporting.
 ## Test conventions
 
 - Specs live next to their subject: `foo.service.ts` → `foo.service.spec.ts`.
+  Frontend included: `LyricsDisplay.tsx` → `LyricsDisplay.spec.tsx`, not
+  `__tests__/LyricsDisplay.test.tsx`.
 - Controller and pipe tests go through real HTTP with `supertest` plus the real
   `ValidationPipe`, not by calling methods directly. See
   `src/common/pipes/object-id-params.spec.ts`.
@@ -63,6 +76,23 @@ suite exists when reporting.
 - Mocking `@anthropic-ai/sdk`: its error classes live on the prototype chain,
   not as own properties, so `Object.assign` over the default export does not
   copy them. Copy the ones you need explicitly or `instanceof` silently fails.
+
+### Frontend specifics
+
+- Vitest globals are **off**. Import `describe`/`it`/`expect`/`vi` from
+  `vitest` in every spec. This is what keeps `eslint.config.mjs` free of
+  test-only environment config.
+- Stub `fetch` with `stubFetch` from `src/test/fetch-stub.ts`; do not mock
+  `@/lib/api`. The real client then produces the real error strings, and the
+  real child components render, so a spec cannot pass against an error shape
+  the app never emits.
+- Fixtures for `Spell`, `Genre` and `Generation` live in `src/test/fixtures.ts`.
+- `userEvent` deadlocks against `vi.useFakeTimers()`. When a spec is about a
+  timer, drive it with `fireEvent` inside `act` instead. See the two-second
+  reset case in `LyricsDisplay.spec.tsx`.
+- jsdom implements neither `navigator.clipboard` nor `document.execCommand`.
+  Define them per spec with `Object.defineProperty(..., {configurable: true})`
+  and delete them in `afterEach`.
 
 ## Commit and PR conventions
 
