@@ -99,11 +99,7 @@ suite exists when reporting.
 
 Commits: imperative subject with the ticket ID in parens, e.g.
 `Validate ObjectIds and cap customPrompt length (VEG-63, VEG-64)`. Body explains
-why, not what. Trailer:
-
-```
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-```
+why, not what. Trailer: use whatever the harness attribution specifies.
 
 PRs: ticket ID in the title, `Fixes VEG-NN` in the body so Linear transitions
 the issue, and the `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
@@ -123,8 +119,8 @@ merge.
 
 ## Review sizing
 
-Use the skill defaults (skip / standard / deep). Treat these as risk triggers
-for this project, escalating to **deep**:
+Use the skill defaults (skip / standard / risk). Treat these as risk triggers
+for this project, escalating to **risk**:
 
 - Anything under `src/common/`, which every module shares.
 - Auth-adjacent or input-validation code: pipes, DTO validators, CORS, Helmet,
@@ -132,6 +128,9 @@ for this project, escalating to **deep**:
 - Anything touching the Anthropic call path, since failures there cost money
   and can leak upstream detail.
 - Mongoose schema or index changes.
+
+Reproduce a reviewer finding before relaying it. Do not push a triage until
+every reviewer has reported.
 
 ## Check the ticket is still real
 
