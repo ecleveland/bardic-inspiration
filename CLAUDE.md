@@ -37,6 +37,9 @@ npm run dev           # http://localhost:3000
 ANTHROPIC_API_KEY=your-key docker compose up
 ```
 
+### Running on different ports
+Defaults (3001 backend, 3000 frontend, 27017 Mongo) collide with other local projects on the same stack. Override with `MONGO_PORT`/`BACKEND_PORT`/`FRONTEND_PORT`, either as env vars to `./dev.sh` or in a root `.env` for `docker compose up` — see the README's "Running on different ports" section.
+
 ## API
 - Backend serves at `http://localhost:3001/api`
 - Swagger docs at `http://localhost:3001/api/docs`

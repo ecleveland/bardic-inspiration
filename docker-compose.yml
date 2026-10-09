@@ -5,7 +5,7 @@ services:
     image: mongo:7
     container_name: bardic-mongo
     ports:
-      - '27017:27017'
+      - '${MONGO_PORT:-27017}:27017'
     volumes:
       - mongo-data:/data/db
     restart: unless-stopped
@@ -14,12 +14,12 @@ services:
     build: ./backend
     container_name: bardic-backend
     ports:
-      - '3001:3001'
+      - '${BACKEND_PORT:-3001}:3001'
     environment:
       - PORT=3001
       - MONGODB_URI=mongodb://mongodb:27017/bardic-inspiration
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - FRONTEND_URL=http://localhost:3000
+      - FRONTEND_URL=http://localhost:${FRONTEND_PORT:-3000}
     depends_on:
       - mongodb
     restart: unless-stopped
@@ -28,9 +28,9 @@ services:
     build: ./frontend
     container_name: bardic-frontend
     ports:
-      - '3000:3000'
+      - '${FRONTEND_PORT:-3000}:3000'
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3001/api
+      - NEXT_PUBLIC_API_URL=http://localhost:${BACKEND_PORT:-3001}/api
     depends_on:
       - backend
     restart: unless-stopped

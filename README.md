@@ -47,6 +47,21 @@ npm run dev             # http://localhost:3000
 ANTHROPIC_API_KEY=your-key docker compose up
 ```
 
+### Running on different ports
+
+The defaults (3001 backend, 3000 frontend, 27017 Mongo) collide with any other local project using the same stack. Override them:
+
+```bash
+# ./dev.sh (non-Docker)
+MONGO_PORT=27018 BACKEND_PORT=3011 FRONTEND_PORT=3010 ./dev.sh
+
+# docker compose
+cp .env.example .env   # edit MONGO_PORT / BACKEND_PORT / FRONTEND_PORT
+docker compose up
+```
+
+Running the backend and frontend by hand instead of through `dev.sh`? Set `PORT` for each (`cd backend && PORT=3011 npm run start:dev`, `cd frontend && PORT=3010 npm run dev`) and update `NEXT_PUBLIC_API_URL` / `FRONTEND_URL` in each package's `.env` to match.
+
 ## API Endpoints
 
 | Method | Path | Purpose |
