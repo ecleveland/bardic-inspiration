@@ -8,8 +8,9 @@ command runs from a package root, not the repo root.
 
 - `git status` clean.
 - `gh auth status` succeeds.
-- No stale dev servers: `lsof -i :3000,:3001 -sTCP:LISTEN`. Stop them with
-  `/stop-dev` rather than killing by hand.
+- No stale dev servers: `lsof -i :3000,:3001 -sTCP:LISTEN` (or whatever
+  `BACKEND_PORT`/`FRONTEND_PORT` this project's `./dev.sh` was last run with).
+  Stop them with `/stop-dev` rather than killing by hand.
 - **MongoDB is not needed to run tests.** Every spec under `backend/src` mocks
   its Mongoose model. Only start Mongo (`docker compose up mongodb -d`) if the
   ticket involves seeding or manual API poking.
